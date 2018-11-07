@@ -1,0 +1,12 @@
+Debug/
+Release/
+
+AlienAttack/Debug/
+AlienAttack/Release/
+
+*.sdf
+*.opensdf
+*.suo
+*.zip
+
+
