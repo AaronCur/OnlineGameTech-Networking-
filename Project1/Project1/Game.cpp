@@ -22,10 +22,16 @@ void Game::initialise()
 {
 	m_playerDot = new Dot(false);
 	m_enemyDot = new Dot(true);
+	m_client = new Client();
+	m_client->run();
+	m_client->sendMessage("Hello");
 	m_playerDot->Init(m_renderer);
 	m_enemyDot->Init(m_renderer);
 
+	
 }
+
+
 void Game::run()
 {
 	const Uint32 fps = 60;
@@ -69,6 +75,7 @@ void Game::processEvents()
 			m_playerDot->handleEvent(event);
 			m_enemyDot->handleEvent(event);
 
+
 			if (event.key.keysym.sym == SDLK_ESCAPE)
 				exit = true;
 			break;
@@ -81,6 +88,7 @@ void Game::update()
 	
 	m_playerDot->move(1200, 700);
 	m_enemyDot->move(1200, 700);
+	m_client->receive();
 	
 }
 

@@ -5,12 +5,18 @@
 
 using namespace std;
 
-void main()
-{
-	string ipAddress = "127.0.0.1";			// IP Address of the server
-	int port = 54000;						// Listening port # on the server
+#include "Client.h"
 
-	// Initialize WinSock
+Client::Client()
+{
+
+	/// <summary>
+	/// Constructor
+	/// </summary>
+
+
+											// Initialize WinSock
+
 	WSAData data;
 	WORD ver = MAKEWORD(2, 2);
 	int wsResult = WSAStartup(ver, &data);
@@ -21,7 +27,7 @@ void main()
 	}
 
 	// Create socket
-	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
+	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET)
 	{
 		cerr << "Can't create socket, Err #" << WSAGetLastError() << endl;
@@ -30,10 +36,21 @@ void main()
 	}
 
 	// Fill in a hint structure
-	sockaddr_in hint;
 	hint.sin_family = AF_INET;
 	hint.sin_port = htons(port);
 	inet_pton(AF_INET, ipAddress.c_str(), &hint.sin_addr);
+
+	
+}
+
+Client::~Client()
+{
+}
+
+
+
+bool Client::run()
+{
 
 	// Connect to server
 	int connResult = connect(sock, (sockaddr*)&hint, sizeof(hint));
@@ -42,39 +59,39 @@ void main()
 		cerr << "Can't connect to server, Err #" << WSAGetLastError() << endl;
 		closesocket(sock);
 		WSACleanup();
-		return;
+		return false;
 	}
 
-	// Do-while loop to send and receive data
-	char buf[4096];
-	string userInput;
+	return true;
 
-	do
-	{
-		// Prompt the user for some text
-		cout << "> ";
-		getline(cin, userInput);
 
-		if (userInput.size() > 0)		// Make sure the user has typed in something
-		{
-			// Send the text
-			int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
-			if (sendResult != SOCKET_ERROR)
-			{
-				// Wait for response
-				ZeroMemory(buf, 4096);
-				int bytesReceived = recv(sock, buf, 4096, 0);
-				if (bytesReceived > 0)
-				{
-					// Echo response to console
-					cout << "SERVER> " << string(buf, 0, bytesReceived) << endl;
-				}
-			}
-		}
-	
-	} while (userInput.size() > 0);
 
-	// Gracefully close down everything
-	closesocket(sock);
-	WSACleanup();
 }
+
+void Client::receive()
+{
+
+
+	// Wait for response
+	ZeroMemory(buf, 4096);
+	int bytesReceived = recv(sock, buf, 4096, 0);
+	if (bytesReceived > 0)
+	{
+		// Echo response to console
+		cout << "SERVER> " << string(buf, 0, bytesReceived) << endl;
+	}
+
+
+
+
+}
+
+void Client::sendMessage(std::string message)
+{
+	string userInput;
+	userInput = message;
+	int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
+	
+
+}
+

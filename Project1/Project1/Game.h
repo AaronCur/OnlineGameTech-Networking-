@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <iostream>
 #include "Dot.h"
+#include <WS2tcpip.h>
+#include "Client.h"
+
 
 using namespace std;
 
@@ -26,6 +29,7 @@ private:
 	void render();
 	void initialise();
 
+	Client* m_client;
 	SDL_Window *m_window;
 	SDL_Renderer *m_renderer;
 	SDL_Event event;
@@ -33,6 +37,8 @@ private:
 
 	Dot* m_playerDot;
 	Dot* m_enemyDot;
+
+
 
 };
 
