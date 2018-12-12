@@ -10,6 +10,7 @@
 #include "Dot.h"
 #include <WS2tcpip.h>
 #include "Client.h"
+#include <string.h>
 
 
 using namespace std;
@@ -38,6 +39,13 @@ private:
 	Dot* m_playerDot;
 	Dot* m_enemyDot;
 
+	std::string s;
+	std::string delimiter;
+	std::string token;
+	bool joined = false;
+
+	LTexture winTexture;
+	LTexture loseTexture;
 
 
 };

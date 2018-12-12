@@ -20,13 +20,23 @@ Game::~Game()
 }
 void Game::initialise()
 {
-	m_playerDot = new Dot(false);
-	m_enemyDot = new Dot(true);
+	
 	m_client = new Client();
 	m_client->run();
 	m_client->sendMessage("Hello");
-	m_playerDot->Init(m_renderer);
-	m_enemyDot->Init(m_renderer);
+
+	if (!winTexture.loadFromFile("winScreen.png", m_renderer))
+	{
+		printf("Failed to load dot texture!\n");
+
+	}
+
+	if (!loseTexture.loadFromFile("loseScreen.png", m_renderer))
+	{
+		printf("Failed to load dot texture!\n");
+
+	}
+	
 
 	
 }
@@ -85,10 +95,37 @@ void Game::processEvents()
 
 void Game::update()
 {
-	
-	m_playerDot->move(1200, 700);
-	m_enemyDot->move(1200, 700);
 	m_client->receive();
+
+	if (m_client->m_joinNum == 2 && joined == false) {
+		m_playerDot = new Dot(true, 100, 100);
+		m_enemyDot = new Dot(false, 400, 400);
+		m_playerDot->Init(m_renderer);
+		m_enemyDot->Init(m_renderer);
+		joined = true;
+	}
+	else if (m_client->m_joinNum == 3 && joined == false) {
+		m_playerDot = new Dot(false, 100, 100);
+		m_enemyDot = new Dot(true, 400, 400);
+		m_playerDot->Init(m_renderer);
+		m_enemyDot->Init(m_renderer);
+		joined = true;
+	}
+	m_playerDot->move(1200, 700);
+
+
+	if (m_client->m_positionVec.size() > 1) {
+		m_enemyDot->SetPosition(m_client->m_positionVec[0], m_client->m_positionVec[1]);
+	}
+	
+	m_client->sendMessage(m_playerDot->m_messgage);
+
+	if (m_enemyDot->Checkcollision(m_playerDot->GetCenterX(), m_playerDot->GetCenterY()))
+	{
+		m_client->sendMessage("EndGame/");
+		m_client->gameOver = true;
+	}
+	
 	
 }
 
@@ -99,11 +136,22 @@ void Game::render()
 		SDL_Log("Could not create a renderer: %s", SDL_GetError());
 	}
 
-	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 	SDL_RenderClear(m_renderer);
 
 	m_playerDot->render(m_renderer);
 	m_enemyDot->render(m_renderer);
+	if (m_client->gameOver == true)
+	{
+		if (m_playerDot->isChaser == true)
+		{
+			winTexture.render(0, 0, m_renderer);
+		}
+		if (m_playerDot->isChaser == false)
+		{
+			loseTexture.render(0, 0, m_renderer);
+		}
+	}
 
 	SDL_RenderPresent(m_renderer);
 

@@ -5,7 +5,7 @@
 #include <SDL_image.h>
 #include <stdlib.h>
 #include <iostream>
-
+#include <vector>
 #include <WS2tcpip.h>
 #pragma comment(lib, "ws2_32.lib")
 
@@ -22,7 +22,10 @@ public:
 	void receive();
 	void sendMessage(std::string message);
 	void close();
-
+	std::vector<float> m_positionVec;
+	bool joined = false;
+	bool gameOver = false;
+	int m_joinNum;
 private:
 
 
@@ -33,5 +36,7 @@ private:
 	string userInput;
 	string ipAddress = "149.153.106.161";			// IP Address of the server
 	int port = 54000;						// Listening port # on the server
+	string message;
+	
 
 };

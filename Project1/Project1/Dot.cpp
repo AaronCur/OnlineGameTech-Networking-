@@ -1,12 +1,12 @@
 #include "Dot.h"
 #include <algorithm>
 #include <string>
-Dot::Dot(bool chaser)
+Dot::Dot(bool chaser, int x, int y)
 {
 	isChaser = chaser;
 	//Initialize the offsets
-	mPosX = 0;
-	mPosY = 0;
+	mPosX = x;
+	mPosY = y;
 
 	//Initialize the velocity
 	mVelX = 0;
@@ -21,8 +21,8 @@ Dot::Dot(bool chaser)
 		gDotTexture.setColor(66, 69, 244);
 	}
 
-	width = 10;
-	height = 10;
+	width = 20;
+	height = 20;
 }
 
 Dot::~Dot()
@@ -44,17 +44,20 @@ void Dot::Init(SDL_Renderer *gRenderer)
 {
 	if (isChaser)
 	{
-		if (!gDotTexture.loadFromFile("reddot.png", gRenderer))
+		if (!gDotTexture.loadFromFile("redDot.bmp", gRenderer))
 		{
 			printf("Failed to load dot texture!\n");
+
 		}
 	}
 	else {
-		if (!gDotTexture.loadFromFile("bluedot.png", gRenderer))
+		if (!gDotTexture.loadFromFile("dot.bmp", gRenderer))
 		{
 			printf("Failed to load dot texture!\n");
 		}
 	}
+	width = gDotTexture.getWidth();
+	height = gDotTexture.getHeight();
 }
 
 void Dot::handleEvent(SDL_Event& e)
@@ -139,6 +142,14 @@ void Dot::move(int SCREEN_HEIGHT, int SCREEN_WIDTH)
 
 	mCenterX = mPosX + (width / 2);
 	mCenterY = mPosY + (height / 2);
+
+	m_messgage = "Position/"+std::to_string(mCenterX)+"/" + std::to_string(mCenterY)+ "/";
+}
+
+void Dot::setPos(float x, float y)
+{
+	mCenterX = x + (width / 2);
+	mCenterY = y + (height / 2);
 }
 
 void Dot::render(SDL_Renderer *gRenderer)

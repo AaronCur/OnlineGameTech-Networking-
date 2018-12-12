@@ -82,8 +82,40 @@ void Client::receive()
 	int bytesReceived = recv(sock, buf, 4096, 0);
 	if (bytesReceived > 0)
 	{
+		m_positionVec.clear();
 		// Echo response to console
 		cout << "SERVER> " << string(buf, 0, bytesReceived) << endl;
+
+		std::string pos2 = string(buf, 0, bytesReceived);
+		size_t pos = 0;
+		std::string token;
+
+		std::string delimiter = "/";
+
+		pos = pos2.find(delimiter);
+		token = pos2.substr(0, pos);
+		pos2.erase(0, pos + delimiter.length());
+
+		if (token == "Position")
+		{
+			while ((pos = pos2.find(delimiter)) != std::string::npos)
+			{
+				token = pos2.substr(0, pos);
+				m_positionVec.push_back(atof(token.c_str()));
+				pos2.erase(0, pos + delimiter.length());
+			}
+		}
+		if (token == "Welcome to the Awesome Chat Server player:")
+		{
+			while ((pos = pos2.find(delimiter)) != std::string::npos)
+			{
+				token = pos2.substr(0, pos);
+				m_joinNum = atof(token.c_str());
+				pos2.erase(0, pos + delimiter.length());
+				joined = true;
+			}
+		}
+	
 	}
 
 

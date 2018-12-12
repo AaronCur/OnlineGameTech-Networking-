@@ -85,8 +85,9 @@ void main()
 				// Add the new connection to the list of connected clients
 				FD_SET(client, &master);
 
+				int id = i + 1;
 				// Send a welcome message to the connected client
-				string welcomeMsg = "Welcome to the Awesome Chat Server!\r\n";
+				string welcomeMsg = "Welcome to the Awesome Chat Server player:/"+ std::to_string(master.fd_count)+"/";
 				send(client, welcomeMsg.c_str(), welcomeMsg.size() + 1, 0);
 			}
 			else // It's an inbound message
@@ -127,7 +128,7 @@ void main()
 						if (outSock != listening && outSock != sock)
 						{
 							ostringstream ss;
-							ss << "SOCKET #" << sock << ": " << buf << "\r\n";
+							ss << buf << "\r\n";
 							string strOut = ss.str();
 
 							send(outSock, strOut.c_str(), strOut.size() + 1, 0);
